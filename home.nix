@@ -34,7 +34,7 @@ in
     setxkbmap
 
     # Browser
-    inputs.zen-browser.packages.${pkgs.system}.default
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # Desenvolvimento
     gcc
@@ -47,7 +47,7 @@ in
     rust-analyzer
     clang-tools
     tree-sitter
-    nodePackages.typescript-language-server
+    typescript-language-server
     gopls
     jdt-language-server
 
@@ -137,7 +137,6 @@ in
         size  = 8.0;
       };
 
-      # default_border none
       window.border = 0;
 
       gaps = {
