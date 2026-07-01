@@ -10,12 +10,12 @@
   # Desabilita Radeon (causa kernel panic),
   # usa apenas a GPU integrada Intel.
   # ============================================
-  boot.blacklistedKernelModules = [ "radeon" ];
-  boot.kernelParams = [
-    "radeon.modeset=0"
-    "i915.modeset=1"
-  ];
-  services.xserver.videoDrivers = [ "intel" ];
+  #boot.blacklistedKernelModules = [ "radeon" ];
+  #boot.kernelParams = [
+  # "radeon.modeset=0"
+  # "i915.modeset=1"
+  #];
+  #services.xserver.videoDrivers = [ "intel" ];
 
   # ============================================
   # Boot
