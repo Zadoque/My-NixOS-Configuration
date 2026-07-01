@@ -3,7 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    
+
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -18,6 +20,7 @@
         ./configuration.nix
         home-manager.nixosModules.home-manager
         {
+          home-manager.extraSpecialArgs = { inherit inputs; };
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           # Indica qual arquivo configura o seu usuário "dock"
