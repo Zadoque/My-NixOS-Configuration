@@ -1,5 +1,9 @@
 { config, pkgs, inputs, ... }:
 
+let
+  mod = "Mod1";
+  sup = "Mod4";
+in
 {
   home.username      = "dock";
   home.homeDirectory = "/home/dock";
@@ -71,9 +75,8 @@
 
   # ============================================
   # Script toggle-layout.sh
-  # Atenção: dentro de strings ''...'' do Nix,
-  # variáveis bash ${VAR} devem ser escritas
-  # como ''${VAR} para não serem interpoladas.
+  # Dentro de strings ''...'' do Nix,
+  # ${VAR} do bash vira ''${VAR}.
   # ============================================
   home.file.".config/i3/toggle-layout.sh" = {
     executable = true;
@@ -127,7 +130,7 @@
     package = pkgs.i3;
 
     config = {
-      modifier = "Mod1";
+      modifier = mod;
 
       fonts = {
         names = [ "monospace" ];
@@ -153,7 +156,7 @@
         { command = "dunst";                                              notification = false; }
       ];
 
-      keybindings = let mod = "Mod1"; sup = "Mod4"; in {
+      keybindings = {
         "${mod}+Return" = "exec --no-startup-id alacritty";
         "${mod}+z"      = "exec --no-startup-id app.zen_browser.zen";
         "${mod}+o"      = "exec --no-startup-id i3lock";
