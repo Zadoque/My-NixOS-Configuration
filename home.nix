@@ -64,6 +64,7 @@ in
     qbittorrent
     gh
     git
+    dolphin
 
     # Áudio
     pulseaudio
