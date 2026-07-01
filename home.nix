@@ -137,7 +137,8 @@ in
         size  = 8.0;
       };
 
-      defaultBorder = "none";
+      # default_border none
+      window.border = 0;
 
       gaps = {
         inner     = 3;
@@ -254,9 +255,6 @@ in
 
   # ============================================
   # Picom — Compositor
-  # Referência das opções:
-  #   fading -> fade
-  #   shadow -> shadow (correto)
   # ============================================
   services.picom = {
     enable  = true;
@@ -324,6 +322,8 @@ in
     enable        = true;
     defaultEditor = true;
     withNodeJs    = true;
+    withRuby      = false;
+    withPython3   = false;
 
     extraLuaConfig = ''
       vim.opt.termguicolors = true
