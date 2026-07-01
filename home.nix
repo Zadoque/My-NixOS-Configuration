@@ -29,7 +29,7 @@
     xdotool
     setxkbmap
 
-    # Browsers
+    # Browser
     inputs.zen-browser.packages.${pkgs.system}.default
 
     # Desenvolvimento
@@ -59,17 +59,14 @@
     vlc
     qbittorrent
     gh
+    git
 
     # Áudio
     pulseaudio
     pavucontrol
 
-    # Flatpak tooling
-    flatpak
-    gnome-software
+    # Polkit agent para i3
     polkit_gnome
-    flatpak-builder
-    flatpak-xdg-utils
   ];
 
   # ============================================
@@ -95,25 +92,13 @@
       }
 
       if [[ -n "$DISPLAY" || -n "$WAYLAND_DISPLAY" ]]; then
-        if ! command -v setxkbmap >/dev/null 2>&1; then
-          echo "Erro: setxkbmap não encontrado."
-          exit 1
-        fi
         current_layout=$(setxkbmap -query | awk '/layout:/ {print $2}' | cut -d',' -f1)
         next_layout=$(get_next_layout "$current_layout")
-        echo "Layout atual (X/Wayland): ${current_layout:-desconhecido}"
+        echo "Layout atual: ${current_layout:-desconhecido}"
         echo "Alternando para: $next_layout"
         setxkbmap "$next_layout"
-        echo "Novo layout aplicado: $next_layout"
+        echo "Novo layout: $next_layout"
       else
-        if ! command -v loadkeys >/dev/null 2>&1; then
-          echo "Erro: loadkeys não encontrado."
-          exit 1
-        fi
-        if ! command -v localectl >/dev/null 2>&1; then
-          echo "Erro: localectl não encontrado."
-          exit 1
-        fi
         current_layout=$(localectl status 2>/dev/null | awk -F': ' '/VC Keymap/ {print $2}')
         case "$current_layout" in
           br-abnt2|br-abnt|br) current_layout="br" ;;
@@ -121,14 +106,11 @@
           *)                   current_layout="unknown" ;;
         esac
         next_layout=$(get_next_layout "$current_layout")
-        echo "Layout atual (TTY): $current_layout"
-        echo "Alternando para: $next_layout"
+        echo "Layout TTY: $current_layout -> $next_layout"
         if [[ "$next_layout" == "br" ]]; then
           sudo loadkeys br-abnt2
-          echo "Novo layout aplicado: br-abnt2"
         else
           sudo loadkeys us
-          echo "Novo layout aplicado: us"
         fi
       fi
     '';
@@ -152,24 +134,23 @@
       defaultBorder = "none";
 
       gaps = {
-        inner  = 3;
-        outer  = 3;
-        top    = 3;
-        bottom = 3;
+        inner     = 3;
+        outer     = 3;
+        top       = 3;
+        bottom    = 3;
         smartGaps = true;
       };
 
       startup = [
-        { command = "dex --autostart --environment i3";              notification = false; }
-        { command = "picom -b";                                       notification = false; }
-        { command = "nitrogen --restore";                             notification = false; }
+        { command = "dex --autostart --environment i3";                  notification = false; }
+        { command = "picom -b";                                           notification = false; }
+        { command = "nitrogen --restore";                                 notification = false; }
         { command = "xss-lock --transfer-sleep-lock -- i3lock --nofork"; notification = false; }
-        { command = "nm-applet";                                      notification = false; }
-        { command = "dunst";                                          notification = false; }
+        { command = "nm-applet";                                          notification = false; }
+        { command = "dunst";                                              notification = false; }
       ];
 
       keybindings = let mod = "Mod1"; sup = "Mod4"; in {
-        # Terminal e apps
         "${mod}+Return" = "exec --no-startup-id alacritty";
         "${mod}+z"      = "exec --no-startup-id app.zen_browser.zen";
         "${mod}+o"      = "exec --no-startup-id i3lock";
@@ -177,20 +158,15 @@
         "${mod}+p"      = "exec poweroff";
         "${mod}+d"      = "exec --no-startup-id dmenu_run";
         "Print"         = "exec flameshot gui";
+        "${mod}+space"  = "exec ~/.config/i3/toggle-layout.sh";
 
-        # Toggle layout de teclado
-        "${mod}+space" = "exec ~/.config/i3/toggle-layout.sh";
-
-        # Volume (Super)
         "${sup}+8" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +1%";
         "${sup}+7" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -1%";
         "${sup}+6" = "exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle";
         "${sup}+5" = "exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle";
 
-        # Fechar janela
         "${mod}+Shift+q" = "kill";
 
-        # Foco (hjkl + setas)
         "${mod}+h"     = "focus left";
         "${mod}+j"     = "focus up";
         "${mod}+k"     = "focus down";
@@ -200,7 +176,6 @@
         "${mod}+Up"    = "focus up";
         "${mod}+Right" = "focus right";
 
-        # Mover janela
         "${mod}+Shift+h"     = "move left";
         "${mod}+Shift+j"     = "move up";
         "${mod}+Shift+k"     = "move down";
@@ -210,11 +185,9 @@
         "${mod}+Shift+Up"    = "move up";
         "${mod}+Shift+Right" = "move right";
 
-        # Split
         "${sup}+h" = "split h";
         "${sup}+v" = "split v";
 
-        # Layout
         "${mod}+f"           = "fullscreen toggle";
         "${mod}+s"           = "layout stacking";
         "${mod}+w"           = "layout tabbed";
@@ -223,7 +196,6 @@
         "${mod}+m"           = "focus mode_toggle";
         "${mod}+a"           = "focus parent";
 
-        # Workspaces — trocar
         "${mod}+1" = "workspace number 1";
         "${mod}+2" = "workspace number 2";
         "${mod}+3" = "workspace number 3";
@@ -235,7 +207,6 @@
         "${mod}+9" = "workspace number 9";
         "${mod}+0" = "workspace number 10";
 
-        # Workspaces — mover janela
         "${mod}+Shift+1" = "move container to workspace number 1";
         "${mod}+Shift+2" = "move container to workspace number 2";
         "${mod}+Shift+3" = "move container to workspace number 3";
@@ -247,27 +218,24 @@
         "${mod}+Shift+9" = "move container to workspace number 9";
         "${mod}+Shift+0" = "move container to workspace number 10";
 
-        # i3 controle
         "${mod}+Shift+c" = "reload";
         "${mod}+Shift+r" = "restart";
         "${mod}+Shift+e" = "exec i3-nagbar -t warning -m 'Sair do i3?' -B 'Sim' 'i3-msg exit'";
-
-        # Modo resize
-        "${mod}+t" = "mode resize";
+        "${mod}+t"       = "mode resize";
       };
 
       modes = {
         resize = {
-          h      = "resize shrink width 20 px or 20 ppt";
-          j      = "resize grow height 20 px or 20 ppt";
-          k      = "resize shrink height 20 px or 20 ppt";
-          l      = "resize grow width 20 px or 20 ppt";
-          Left   = "resize shrink width 20 px or 20 ppt";
-          Down   = "resize grow height 20 px or 20 ppt";
-          Up     = "resize shrink height 20 px or 20 ppt";
-          Right  = "resize grow width 20 px or 20 ppt";
-          Return  = "mode default";
-          Escape  = "mode default";
+          h          = "resize shrink width 20 px or 20 ppt";
+          j          = "resize grow height 20 px or 20 ppt";
+          k          = "resize shrink height 20 px or 20 ppt";
+          l          = "resize grow width 20 px or 20 ppt";
+          Left       = "resize shrink width 20 px or 20 ppt";
+          Down       = "resize grow height 20 px or 20 ppt";
+          Up         = "resize shrink height 20 px or 20 ppt";
+          Right      = "resize grow width 20 px or 20 ppt";
+          Return     = "mode default";
+          Escape     = "mode default";
           "${mod}+t" = "mode default";
         };
       };
@@ -286,8 +254,8 @@
     backend = "glx";
     vSync   = true;
 
-    shadow        = true;
-    fading        = true;
+    shadow  = true;
+    fading  = true;
 
     activeOpacity   = 0.95;
     inactiveOpacity = 0.90;
@@ -299,9 +267,9 @@
     ];
 
     settings = {
-      corner-radius     = 10;
-      round-borders     = 1;
-      frame-opacity     = 0.90;
+      corner-radius             = 10;
+      round-borders             = 1;
+      frame-opacity             = 0.90;
       inactive-opacity-override = false;
     };
   };
@@ -318,45 +286,39 @@
       path = "${config.home.homeDirectory}/.histfile";
     };
 
-    initContent = ''
-      # Completion styles (compinstall)
-      zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-      zstyle ':completion:*' list-colors ''
-      zstyle ':completion:*' max-errors 3 not-numeric
-
-      export EDITOR=nvim
-
-      # Honeyfetch no início do shell
-      honeyfetch
-
-      # Nix-shell integration
-      source ${pkgs.zsh-nix-shell}/share/zsh-nix-shell/nix-shell.plugin.zsh
-    '';
-
     oh-my-zsh = {
       enable  = true;
       theme   = "robbyrussell";
       plugins = [ "git" "z" "sudo" ];
     };
 
-    enableCompletion    = true;
-    autosuggestion.enable  = true;
+    enableCompletion          = true;
+    autosuggestion.enable     = true;
     syntaxHighlighting.enable = true;
+
+    # Nota: as aspas simples vazias dentro do bloco Nix são escritas como ''''
+    initContent = ''
+      zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+      zstyle ':completion:*' list-colors ''''
+      zstyle ':completion:*' max-errors 3 not-numeric
+
+      export EDITOR=nvim
+      honeyfetch
+
+      source ${pkgs.zsh-nix-shell}/share/zsh-nix-shell/nix-shell.plugin.zsh
+    '';
   };
 
   # ============================================
   # Neovim
   # ============================================
   programs.neovim = {
-    enable       = true;
+    enable        = true;
     defaultEditor = true;
-    withNodeJs   = true;
+    withNodeJs    = true;
 
     extraLuaConfig = ''
-      -- Cores verdadeiras
       vim.opt.termguicolors = true
-
-      -- Números de linha
       vim.opt.number         = true
       vim.opt.relativenumber = true
       vim.opt.cursorline     = true
@@ -364,14 +326,12 @@
       vim.api.nvim_set_hl(0, "LineNr",       { fg = "#505050" })
       vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFFF00", bold = true })
 
-      -- Indentação
       vim.opt.tabstop     = 2
       vim.opt.shiftwidth  = 2
       vim.opt.expandtab   = true
       vim.opt.autoindent  = true
       vim.opt.smartindent = true
 
-      -- Bootstrap lazy.nvim
       local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
       if not vim.loop.fs_stat(lazypath) then
         vim.fn.system({
@@ -384,73 +344,48 @@
       vim.opt.rtp:prepend(lazypath)
 
       require("lazy").setup({
-        -- Tema
         {
           "folke/tokyonight.nvim",
-          lazy     = false,
-          priority = 1000,
-          config   = function()
-            require("tokyonight").setup({
-              style       = "night",
-              transparent = false,
-            })
+          lazy = false, priority = 1000,
+          config = function()
+            require("tokyonight").setup({ style = "night", transparent = false })
           end,
         },
-
-        -- Treesitter
         {
           "nvim-treesitter/nvim-treesitter",
-          version = "0.9.3",
-          build   = ":TSUpdate",
-          config  = function()
+          version = "0.9.3", build = ":TSUpdate",
+          config = function()
             require("nvim-treesitter").setup({
               ensure_installed = {
-                "c", "cpp", "lua", "python",
-                "javascript", "typescript",
-                "markdown", "sql", "bash",
-                "html", "css", "json", "yaml", "rust",
+                "c", "cpp", "lua", "python", "javascript", "typescript",
+                "markdown", "sql", "bash", "html", "css", "json", "yaml", "rust",
               },
-              auto_install  = true,
-              sync_install  = false,
-              highlight      = { enable = true },
-              indent         = { enable = true },
+              auto_install = true, sync_install = false,
+              highlight = { enable = true }, indent = { enable = true },
             })
           end,
         },
-
-        -- LSP
         {
           "neovim/nvim-lspconfig",
           config = function()
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
-            local servers = {
-              "clangd", "rust_analyzer", "ts_ls", "gopls", "jdtls",
-            }
-            for _, server in ipairs(servers) do
+            for _, server in ipairs({ "clangd", "rust_analyzer", "ts_ls", "gopls", "jdtls" }) do
               vim.lsp.config(server, { capabilities = capabilities })
               vim.lsp.enable(server)
             end
           end,
         },
-
-        -- Autocomplete
         {
           "hrsh7th/nvim-cmp",
-          event        = { "InsertEnter", "CmdlineEnter" },
+          event = { "InsertEnter", "CmdlineEnter" },
           dependencies = {
-            "hrsh7th/cmp-nvim-lsp",
-            "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-path",
-            "hrsh7th/cmp-cmdline",
+            "hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-buffer",
+            "hrsh7th/cmp-path",     "hrsh7th/cmp-cmdline",
           },
           config = function()
             local cmp = require("cmp")
             cmp.setup({
-              snippet = {
-                expand = function(args)
-                  vim.snippet.expand(args.body)
-                end,
-              },
+              snippet = { expand = function(args) vim.snippet.expand(args.body) end },
               mapping = cmp.mapping.preset.insert({
                 ["<C-Space>"] = cmp.mapping.complete(),
                 ["<C-e>"]     = cmp.mapping.abort(),
@@ -471,16 +406,12 @@
             })
             cmp.setup.cmdline(":", {
               mapping = cmp.mapping.preset.cmdline(),
-              sources = cmp.config.sources(
-                { { name = "path" } },
-                { { name = "cmdline" } }
-              ),
+              sources = cmp.config.sources({ { name = "path" } }, { { name = "cmdline" } }),
             })
           end,
         },
       })
 
-      -- Aplica tema após plugins
       vim.cmd("colorscheme tokyonight")
     '';
   };

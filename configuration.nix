@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running 'nixos-help').
-
 { config, pkgs, ... }:
 
 {
@@ -9,30 +5,28 @@
     ./hardware-configuration.nix
   ];
 
-/* =============================================
-     Configuração de GPU - Samsung NP700Z4A
-     Desabilita Radeon, usa apenas Intel HD3000
-     ============================================= 
-
+  # ============================================
+  # GPU — Samsung NP7004AZH
+  # Desabilita Radeon (causa kernel panic),
+  # usa apenas a GPU integrada Intel.
+  # ============================================
   boot.blacklistedKernelModules = [ "radeon" ];
-
   boot.kernelParams = [
-    "radeon.modeset=0"  # desabilita KMS da Radeon
-    "i915.modeset=1"    # força Intel HD3000
+    "radeon.modeset=0"
+    "i915.modeset=1"
   ];
   services.xserver.videoDrivers = [ "intel" ];
-*/
 
   # ============================================
   # Boot
   # ============================================
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.enable      = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # ============================================
   # Rede
   # ============================================
-  networking.hostName = "nixos";
+  networking.hostName              = "nixos";
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPorts = [ 6000 6001 ];
 
@@ -68,20 +62,15 @@
 
   # ============================================
   # Servidor Gráfico + i3
-  # (home-manager gerencia a config do i3;
-  #  aqui só habilitamos o servidor e o WM)
   # ============================================
   services.xserver.enable = true;
   services.xserver.windowManager.i3.enable = true;
-
-  # Display manager
   services.displayManager.sddm.enable = true;
 
   # ============================================
-  # Flatpak + Portais XDG
+  # Portais XDG
   # ============================================
-  services.flatpak.enable = true;
-  xdg.portal.enable = true;
+  xdg.portal.enable      = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
 
   # ============================================
@@ -95,16 +84,14 @@
   services.openssh.enable = true;
 
   # ============================================
-  # Zsh — precisa estar habilitado no sistema
-  # para funcionar como shell de login.
-  # Toda a configuração real fica no home.nix.
+  # Zsh — obrigatório no sistema para shell de login
+  # (configuração real fica no home.nix)
   # ============================================
-  programs.zsh.enable = true;
-  environment.pathsToLink = [ "/share/zsh" ];
+  programs.zsh.enable      = true;
+  environment.pathsToLink  = [ "/share/zsh" ];
 
   # ============================================
   # Usuários
-  # (pacotes do usuário "dock" vivem no home.nix)
   # ============================================
   users.users.dock = {
     isNormalUser = true;
@@ -126,11 +113,6 @@
       libreoffice
       zathura
       kdePackages.okular
-      flatpak
-      gnome-software
-      polkit_gnome
-      flatpak-builder
-      flatpak-xdg-utils
     ];
   };
 
@@ -141,7 +123,6 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   environment.systemPackages = with pkgs; [
-    # ferramentas mínimas de sistema
     git
   ];
 
