@@ -9,6 +9,20 @@
     ./hardware-configuration.nix
   ];
 
+/* =============================================
+     Configuração de GPU - Samsung NP700Z4A
+     Desabilita Radeon, usa apenas Intel HD3000
+     ============================================= 
+
+  boot.blacklistedKernelModules = [ "radeon" ];
+
+  boot.kernelParams = [
+    "radeon.modeset=0"  # desabilita KMS da Radeon
+    "i915.modeset=1"    # força Intel HD3000
+  ];
+  services.xserver.videoDrivers = [ "intel" ];
+*/
+
   # ============================================
   # Boot
   # ============================================
