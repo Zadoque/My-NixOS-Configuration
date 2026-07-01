@@ -254,14 +254,17 @@ in
 
   # ============================================
   # Picom — Compositor
+  # Referência das opções:
+  #   fading -> fade
+  #   shadow -> shadow (correto)
   # ============================================
   services.picom = {
     enable  = true;
     backend = "glx";
     vSync   = true;
 
-    shadow  = true;
-    fading  = true;
+    shadow = true;
+    fade   = true;
 
     activeOpacity   = 0.95;
     inactiveOpacity = 0.90;
