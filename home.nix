@@ -74,6 +74,11 @@ in
   ];
 
   # ============================================
+  # XDG Portal
+  # ============================================
+  xdg.portal.config.common.default = "*";
+
+  # ============================================
   # Script toggle-layout.sh
   # Dentro de strings ''...'' do Nix,
   # ${VAR} do bash vira ''${VAR}.
@@ -304,7 +309,7 @@ in
 
     initContent = ''
       zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-      zstyle ':completion:*' list-colors ''''
+      zstyle ':completion:*' list-colors ''
       zstyle ':completion:*' max-errors 3 not-numeric
 
       export EDITOR=nvim
@@ -324,7 +329,7 @@ in
     withRuby      = false;
     withPython3   = false;
 
-    extraLuaConfig = ''
+    initLua = ''
       vim.opt.termguicolors = true
       vim.opt.number         = true
       vim.opt.relativenumber = true
