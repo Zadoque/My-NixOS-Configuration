@@ -71,6 +71,9 @@
 
   # ============================================
   # Script toggle-layout.sh
+  # Atenção: dentro de strings ''...'' do Nix,
+  # variáveis bash ${VAR} devem ser escritas
+  # como ''${VAR} para não serem interpoladas.
   # ============================================
   home.file.".config/i3/toggle-layout.sh" = {
     executable = true;
@@ -94,7 +97,7 @@
       if [[ -n "$DISPLAY" || -n "$WAYLAND_DISPLAY" ]]; then
         current_layout=$(setxkbmap -query | awk '/layout:/ {print $2}' | cut -d',' -f1)
         next_layout=$(get_next_layout "$current_layout")
-        echo "Layout atual: ${current_layout:-desconhecido}"
+        echo "Layout atual: ''${current_layout:-desconhecido}"
         echo "Alternando para: $next_layout"
         setxkbmap "$next_layout"
         echo "Novo layout: $next_layout"
@@ -296,7 +299,6 @@
     autosuggestion.enable     = true;
     syntaxHighlighting.enable = true;
 
-    # Nota: as aspas simples vazias dentro do bloco Nix são escritas como ''''
     initContent = ''
       zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
       zstyle ':completion:*' list-colors ''''
