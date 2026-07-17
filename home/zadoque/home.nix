@@ -252,7 +252,7 @@ in
     syntaxHighlighting.enable = true;
     initContent = ''
       zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-      zstyle ':completion:*' list-colors ''
+      zstyle ':completion:*' list-colors '''
       zstyle ':completion:*' max-errors 3 not-numeric
       export EDITOR=nvim
       honeyfetch
