@@ -133,7 +133,7 @@ in
       ];
       keybindings = {
         "${mod}+Return" = "exec --no-startup-id alacritty";
-        "${mod}+z" = "exec --no-startup-id zen-beta";
+        "${mod}+z" = "exec --no-startup-id zen-twilight";
         "${mod}+o" = "exec --no-startup-id i3lock";
         "${mod}+r" = "exec reboot";
         "${mod}+p" = "exec poweroff";
