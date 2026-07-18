@@ -65,6 +65,8 @@ in
     kdePackages.dolphin
     pulseaudio
     pavucontrol
+    mcpelauncher-ui-qt
+    mcpelauncher-client
     polkit_gnome
   ];
 
