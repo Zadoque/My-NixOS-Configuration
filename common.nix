@@ -79,6 +79,8 @@
 
   environment.systemPackages = with pkgs; [
     git
+    libva-utils
+    pciutils
   ];
 
   system.stateVersion = "26.05";
