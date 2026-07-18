@@ -81,6 +81,7 @@
     git
     libva-utils
     pciutils
+    libxcb-cursor
   ];
 
   system.stateVersion = "26.05";
