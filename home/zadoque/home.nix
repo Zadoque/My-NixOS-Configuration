@@ -68,6 +68,7 @@ in
     mcpelauncher-ui-qt
     mcpelauncher-client
     polkit_gnome
+    nodejs_26
   ];
 
   xdg.portal.config.common.default = "*";
