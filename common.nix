@@ -10,7 +10,8 @@
 
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPorts = [ 6000 6001 ];
-
+  virtualisation.docker.enableOnBoot = true;
+  virtualisation.docker.enable = true;
   time.timeZone = "America/Sao_Paulo";
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -56,7 +57,7 @@
     isNormalUser = true;
     description = "zadoque";
     shell = pkgs.zsh;
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
   };
 
   users.users.natalia = {
