@@ -17,6 +17,8 @@ in
 
   home.packages = with pkgs; [
     btop
+    google-cloud-sdk
+    antigravity-fhs
     honeyfetch
     ripgrep
     yazi
