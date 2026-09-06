@@ -19,6 +19,8 @@ in
     btop
     google-cloud-sdk
     antigravity-fhs
+    antigravity-cli
+    antigravity-ide
     honeyfetch
     ripgrep
     yazi
