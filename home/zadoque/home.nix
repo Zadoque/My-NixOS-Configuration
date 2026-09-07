@@ -18,8 +18,9 @@ in
   home.packages = with pkgs; [
     btop
     google-cloud-sdk
-    antigravity
     honeyfetch
+    antigravity-ide
+    firebase-tools
     ripgrep
     yazi
     fzf
@@ -33,7 +34,6 @@ in
     dex
     xss-lock
     i3lock
-    nitrogen
     flameshot
     alacritty
     dmenu
