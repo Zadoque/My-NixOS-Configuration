@@ -9,7 +9,7 @@
   };
 
   networking.networkmanager.enable = true;
-  networking.firewall.allowedTCPPorts = [ 6000 6001 ];
+  networking.firewall.allowedTCPPorts = [ 6000 6001 40777 ];
   virtualisation.docker.enableOnBoot = true;
   virtualisation.docker.enable = true;
   time.timeZone = "America/Sao_Paulo";
