@@ -21,6 +21,7 @@ in
     honeyfetch
     antigravity-ide
     firebase-tools
+    jdk17_headless
     ripgrep
     yazi
     fzf
