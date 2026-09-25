@@ -18,9 +18,12 @@ in
   home.packages = with pkgs; [
     btop
     google-cloud-sdk
+    codex
     honeyfetch
     antigravity-ide
     firebase-tools
+    python3
+    ngrok
     jdk21_headless
     ripgrep
     yazi
@@ -72,6 +75,15 @@ in
     mcpelauncher-client
     polkit_gnome
     nodejs_26
+    jq
+    yq-go
+    alloy6
+    opencode
+    cue
+    typescript-language-server
+    vscode-langservers-extracted
+    rust-analyzer
+    texlab
   ];
 
   xdg.portal.config.common.default = "*";
