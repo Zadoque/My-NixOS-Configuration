@@ -13,6 +13,8 @@ in
 
   home.sessionVariables = {
     CUPS_SERVER = "localhost:631";
+    PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright-driver.browsers}";
+    PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS = "true";
   };
 
   home.packages = with pkgs; [
@@ -86,6 +88,9 @@ in
     texlab
     nixd
     nixfmt-rfc-style
+    playwright-driver
+    playwright-test
+    playwright
   ];
 
   xdg.portal.config.common.default = "*";
