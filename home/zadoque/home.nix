@@ -84,6 +84,8 @@ in
     vscode-langservers-extracted
     rust-analyzer
     texlab
+    nixd
+    nixfmt-rfc-style
   ];
 
   xdg.portal.config.common.default = "*";
