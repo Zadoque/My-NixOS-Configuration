@@ -9,6 +9,17 @@ let
     exec ${pkgs.coreutils}/bin/sleep infinity
   '';
 
+  startInhibit = pkgs.writeShellScript "start-sleep-inhibit" ''
+    set -euo pipefail
+    # systemd-inhibit remove NOTIFY_SOCKET do ambiente do filho ao fazer fork.
+    # Expanda o valor antes disso e restaure-o com env, já dentro do inibidor.
+    exec ${pkgs.systemd}/bin/systemd-inhibit \
+      --what=sleep:idle --mode=block --who=${config.home.username}-desktop \
+      --why="Toggle manual de suspensão" \
+      ${pkgs.coreutils}/bin/env "NOTIFY_SOCKET=''${NOTIFY_SOCKET:?Canal de confirmação do systemd indisponível}" \
+      ${holdInhibit}
+  '';
+
   toggleSleep = pkgs.writeShellApplication {
     name = "toggle-sleep-inhibit";
     runtimeInputs = [ pkgs.systemd pkgs.util-linux pkgs.libnotify ];
@@ -57,7 +68,7 @@ in
     Service = {
       Type = "notify";
       NotifyAccess = "all";
-      ExecStart = "${pkgs.systemd}/bin/systemd-inhibit --what=sleep:idle --mode=block --who=${config.home.username}-desktop --why=\"Toggle manual de suspensão\" ${holdInhibit}";
+      ExecStart = "${startInhibit}";
       TimeoutStartSec = 10;
       KillMode = "control-group";
     };
