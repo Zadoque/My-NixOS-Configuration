@@ -1,32 +1,24 @@
-{ config, lib, pkgs, ... }:
-
+{ config, pkgs, ... }:
 {
-  # ==========================================================================
-  # SUA CONFIGURAÇÃO EXISTENTE DO DESKTOP
-  # ==========================================================================
-  # (Cole aqui o conteúdo original do seu configuration.nix)
-  # ==========================================================================
-
   imports = [
     ./hardware-configuration.nix
+    ../../intel.nix
   ];
 
-  # ==========================================================================
-  # POWER MANAGEMENT TOGGLE - SYSTEMD TARGETS
-  # ==========================================================================
-  # Desabilita suspensão/hibernação apenas se powermanagement.disableSuspend = true
-  # ==========================================================================
-  systemd.targets = {
-    sleep.wantedBy = lib.mkIf config.home-manager.users.zadoque.powermanagement.disableSuspend [ ];
-    suspend.wantedBy = lib.mkIf config.home-manager.users.zadoque.powermanagement.disableSuspend [ ];
-    hibernate.wantedBy = lib.mkIf config.home-manager.users.zadoque.powermanagement.disableSuspend [ ];
-    hybrid-sleep.wantedBy = lib.mkIf config.home-manager.users.zadoque.powermanagement.disableSuspend [ ];
-  };
+  networking.hostName = "desktop-nixos";
 
-  # Restante da configuração do desktop...
-  services.xserver.enable = true;
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
-  system.stateVersion = "24.05";
+  # Permite que o usuário dock controle a inibição de suspensão pela sessão.
+  # Não cria máscaras globais nem altera outros usuários/hosts.
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (subject.user == "dock" &&
+          subject.active == true &&
+          (action.id == "org.freedesktop.login1.hibernate" ||
+           action.id == "org.freedesktop.login1.suspend" ||
+           action.id == "org.freedesktop.login1 hybrid-sleep" ||
+           action.id == "org.freedesktop.login1.sleep")) {
+        return polkit.Result.YES;
+      }
+    });
+  '';
 }
