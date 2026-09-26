@@ -1,7 +1,12 @@
 { config, lib, pkgs, ... }:
 
 {
-  # Opção para controlar suspensão/hibernação
+  # ==========================================================================
+  # POWER MANAGEMENT TOGGLE
+  # ==========================================================================
+  # disableSuspend = true  → impede suspensão/hibernação
+  # disableSuspend = false → permite suspensão/hibernação
+  # ==========================================================================
   powermanagement = {
     disableSuspend = lib.mkOption {
       type = lib.types.bool;
@@ -10,8 +15,14 @@
     };
   };
 
-  # Toggle: mude para true para impedir suspensão, false para permitir
+  # Mude este valor para true/false conforme necessário
   powermanagement.disableSuspend = false;
+
+  # ==========================================================================
+  # SUA CONFIGURAÇÃO EXISTENTE DO HOME.NIX
+  # ==========================================================================
+  # (Cole aqui o conteúdo original do seu home.nix)
+  # ==========================================================================
 
   home.stateVersion = "24.05";
 
