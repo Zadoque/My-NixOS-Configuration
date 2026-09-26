@@ -126,44 +126,6 @@ in
     '';
   };
 
-  # ==========================================================================
-  # TOGGLE DE SUSPENSÃO/HIBERNAÇÃO
-  # ==========================================================================
-  # Ativa/desativa inibição de suspensão apenas para este usuário
-  # Keybinding: Mod1+Shift+s (Alt+Shift+S)
-  # ==========================================================================
-  home.file.".config/i3/toggle-sleep-inhibit.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      set -euo pipefail
-
-      runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-      pid_file="$runtime_dir/sleep-inhibit.pid"
-
-      if [[ -f "$pid_file" ]]; then
-        pid="$(cat "$pid_file")"
-        if kill -0 "$pid" 2>/dev/null; then
-          kill "$pid"
-          rm -f "$pid_file"
-          notify-send "Suspensão" "Suspensão e hibernação PERMITIDAS"
-          exit 0
-        fi
-        rm -f "$pid_file"
-      fi
-
-      systemd-inhibit \
-        --user \
-        --what=sleep \
-        --mode=block \
-        --why="Suspensão desativada pelo usuário" \
-        sleep infinity &
-
-      echo "$!" > "$pid_file"
-      notify-send "Suspensão" "Suspensão e hibernação BLOQUEADAS"
-    '';
-  };
-
   xsession.windowManager.i3 = {
     enable = true;
     package = pkgs.i3;
@@ -198,7 +160,6 @@ in
         "${mod}+d" = "exec --no-startup-id dmenu_run";
         "Print" = "exec flameshot gui";
         "${mod}+space" = "exec ~/.config/i3/toggle-layout.sh";
-        "${mod}+Shift+s" = "exec --no-startup-id ~/.config/i3/toggle-sleep-inhibit.sh";
         "${sup}+8" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +1%";
         "${sup}+7" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -1%";
         "${sup}+6" = "exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle";
@@ -218,7 +179,7 @@ in
         "${mod}+Shift+l" = "move right";
         "${mod}+Shift+Left" = "move left";
         "${mod}+Shift+Down" = "move down";
-        "${mod}+Shift+Up" = "focus up";
+        "${mod}+Shift+Up" = "move up";
         "${mod}+Shift+Right" = "move right";
         "${sup}+h" = "split h";
         "${sup}+v" = "split v";
