@@ -1,43 +1,39 @@
 {
-  description = "Configuração NixOS multi-host e multi-usuário com Home Manager e Zen Browser";
+  description = "Zadoque's NixOS configuration";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, zen-browser, ... }@inputs:
-  let
-    mkHost = hostPath: nixpkgs.lib.nixosSystem {
+  outputs = { self, nixpkgs, home-manager, ... }:
+    let
       system = "x86_64-linux";
-      specialArgs = { inherit inputs; };
-      modules = [
-        hostPath
-        ./common.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.dock = import ./home/zadoque/home.nix;
-          home-manager.users.natalia = import ./home/esposa/home.nix;
-        }
-      ];
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+    {
+      nixosConfigurations = {
+        desktop = lib.nixosSystem {
+          specialArgs = { inherit pkgs; };
+          modules = [
+            ./hosts/desktop/configuration.nix
+            ./common.nix
+
+            # Home Manager
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.zadoque = import ./home/zadoque/home.nix;
+
+              # Garantir que a opção do home-manager esteja disponível no NixOS
+              home-manager.extraSpecialArgs = { inherit pkgs; };
+            }
+          ];
+        };
+      };
     };
-  in {
-    nixosConfigurations = {
-      desktop = mkHost ./hosts/desktop/configuration.nix;
-      notebook = mkHost ./hosts/notebook/configuration.nix;
-    };
-  };
 }
