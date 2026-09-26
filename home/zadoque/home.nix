@@ -1,9 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  # ... seu conteúdo atual do home.nix ...
-
-  # Adicionar opção de power management
+  # Opção para controlar suspensão/hibernação
   powermanagement = {
     disableSuspend = lib.mkOption {
       type = lib.types.bool;
@@ -12,8 +10,13 @@
     };
   };
 
-  # Definir o valor do toggle (mude para true/false conforme necessário)
+  # Toggle: mude para true para impedir suspensão, false para permitir
   powermanagement.disableSuspend = false;
 
-  # ... resto do seu home.nix ...
+  home.stateVersion = "24.05";
+
+  home.packages = with pkgs; [
+  ];
+
+  programs.home-manager.enable = true;
 }
