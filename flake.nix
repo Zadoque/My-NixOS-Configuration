@@ -37,6 +37,7 @@
   in {
     nixosConfigurations = {
       desktop = mkHost ./hosts/desktop/configuration.nix;
+      desktop-nss = mkHost ./hosts/desktop-nss/configuration.nix;
       notebook = mkHost ./hosts/notebook/configuration.nix;
     };
   };
